@@ -16,7 +16,28 @@
 <body>
     <h2>All Students </h2>
     <a href="/ci4project/public/students/create">+ Add new Students</a>
+    <a href="/ci4project/public/students/export">Export to excel</a>
+    <a href="<?= site_url('students/import') ?>">Import from Excel</a>
     <br></br>
+
+    <br>
+    <form method="GET" action="<?= site_url('students') ?>">
+        <input type="text" name="search" value="<?= esc($search ?? '') ?>" placeholder="Search by name or email..." style="padding:8px; width:250px; border:1px solid #ccc; border-radius:4px;"/>
+
+        <select name="course" style="padding:8px; border:1px solid #ccc; border-radius:4px;">
+            <option value="">-- All Courses --</option>
+            <?php foreach($courses as $c): ?>
+                <option value="<?= $c['id'] ?>" <?= ($course ?? '') == $c['id'] ? 'selected' : '' ?>>
+                    <?= esc($c['course_name']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <button type="submit" style="padding:8px 16px; background:#007bff; color:#fff; border:none; border-radius:4px; cursor:pointer;">Search</button>
+        <a href="<?= site_url('students') ?>">Clear</a>
+    </form>
+    <br>
+
     <table>
         <tr>
             <th>ID</th>
@@ -50,5 +71,7 @@
         </tr>
         <?php endforeach; ?>
     </table>
+<br>
+<?= $pager->links('default', 'default_full', ['search' => $search, 'course' => $course]) ?>
 </body>
 </html>    

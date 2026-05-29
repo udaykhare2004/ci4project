@@ -38,6 +38,14 @@
     <label>Date of Birth</label>
     <input type="date" name="dob" />
 
+    <label>Course</label>
+    <select name="course_id" style="width:100%; padding:8px; margin-top:4px; border:1px solid #ccc; border-radius:4px; font-size:14px;">
+      <option value="">-- Select Course --</option>
+      <?php foreach($courses as $c): ?>
+          <option value="<?= $c['id'] ?>"><?= esc($c['course_name']) ?></option>
+      <?php endforeach; ?>
+    </select>
+
     <button type="submit">Add Student</button>
   </form>
 
