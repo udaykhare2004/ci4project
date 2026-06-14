@@ -10,6 +10,8 @@ $routes->post('students','Students::store');
 $routes->get('students/export', 'Students::export');
 $routes->get('students/import', 'Students::importForm');
 $routes->post('students/import', 'Students::import');
+$routes->get('students/email', 'Students::emailForm');
+$routes->post('students/email', 'Students::sendEmail');
 $routes->get('students/(:num)','Students::show/$1');
 $routes->get('students/(:num)/edit','Students::edit/$1');
 $routes->post('students/(:num)/edit', 'Students::update/$1');

@@ -40,12 +40,12 @@ class Students extends BaseController
 
     public function store() {
         $rules = [
-            'first_name' => 'required|max_length[50]',
-            'last_name'  => 'required|max_length[50]',
+            'first_name' => 'required|max_length[50]|regex_match[/^[a-zA-Z\s]+$/]',
+            'last_name'  => 'required|max_length[50]|regex_match[/^[a-zA-Z\s]+$/]',
             'email'      => 'required|valid_email|max_length[100]',
-            'phone'      => 'permit_empty|max_length[20]',
+            'phone'      => 'permit_empty|max_length[20]|regex_match[/^[0-9\+\-\s]+$/]',
             'dob'        => 'permit_empty|valid_date',
-        ];
+    ];
 
         if (!$this->validate($rules)) {
             $db = \Config\Database::connect();
@@ -75,6 +75,17 @@ class Students extends BaseController
                 'enrollment_date' => date('Y-m-d'),
             ]);
         }
+
+        $email = \Config\Services::email();
+        $email->setTo($this->request->getPost('email'));
+        $email->setSubject('Welcome to phplearn!');
+        $email->setMessage('
+            <h2>Welcome, ' . $this->request->getPost('first_name') . '!</h2>
+            <p>You have been successfully registered on phplearn.</p>
+            <p>We are glad to have you on board!</p>
+        ');
+        $email->setMailType('html');
+        $email->send();
 
         return redirect()->to(site_url('students'));
     }
@@ -181,10 +192,10 @@ class Students extends BaseController
 
     public function update($id){
         $rules = [
-            'first_name' => 'required|max_length[50]',
-            'last_name'  => 'required|max_length[50]',
+            'first_name' => 'required|max_length[50]|regex_match[/^[a-zA-Z\s]+$/]',
+            'last_name'  => 'required|max_length[50]|regex_match[/^[a-zA-Z\s]+$/]',
             'email'      => 'required|valid_email|max_length[100]',
-            'phone'      => 'permit_empty|max_length[20]',
+            'phone'      => 'permit_empty|max_length[20]|regex_match[/^[0-9\+\-\s]+$/]',
             'dob'        => 'permit_empty|valid_date',
         ];
 
@@ -212,5 +223,33 @@ class Students extends BaseController
         $model = new StudentModel();
         $model->delete($id);
         return redirect()->to(site_url('students'));
+    }
+
+    public function emailForm() {
+        $model = new StudentModel();
+        $data['students'] = $model->findAll();
+        return view('students/email', $data);
+    }
+
+    public function sendEmail() {
+        $to      = $this->request->getPost('student_email');
+        $subject = $this->request->getPost('subject');
+        $message = $this->request->getPost('message');
+
+        $email = \Config\Services::email();
+        $email->setTo($to);
+        $email->setSubject($subject);
+        $email->setMessage($message);
+        $email->setMailType('html');
+
+        if ($email->send()) {
+            $data['success'] = "Email sent successfully to $to!";
+        } else {
+            $data['error'] = "Failed to send email.";
+        }
+
+        $model = new StudentModel();
+        $data['students'] = $model->findAll();
+        return view('students/email', $data);
     }
 }

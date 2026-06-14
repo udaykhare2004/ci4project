@@ -18,6 +18,7 @@
     <a href="/ci4project/public/students/create">+ Add new Students</a>
     <a href="/ci4project/public/students/export">Export to excel</a>
     <a href="<?= site_url('students/import') ?>">Import from Excel</a>
+    <a href="<?= site_url('students/email') ?>">Send Email</a>
     <br></br>
 
     <br>
